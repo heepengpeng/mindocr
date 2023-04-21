@@ -1,8 +1,6 @@
 #pragma once
 #include <cstdint>
-namespace MindOCR
 
-{
     enum InferModelComb
     {
 
@@ -52,4 +50,3 @@ namespace MindOCR
         uint32_t width;
     };
 
-}

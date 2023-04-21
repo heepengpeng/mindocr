@@ -3,17 +3,19 @@
 #include <string>
 #include "model_base.h"
 #include "MxBase/MxBase.h"
+#include "../../data_type/process_data.h"
+#include "../../status_code/status_code.h"
 using MxBase::Tensor;
 namespace MindOCR
 {
     class MindXModel : public MindOCR<MxBase::Tensor>::ModelBase
     {
     public:
-        APP_ERROR Init(const std::stirng &modelPath, const std::string &deviceId);
-        APP_ERROR Infer(std::shared_ptr<void> inputData, std::vector<Tensor> &output);
+        STATUS_CODE Init(ContextInfo &contextInfo);
+        STATUS_CODE Infer(std::shared_ptr<void> inputData, std::vector<Tensor> &output);
 
     private:
-        APP_ERROR InitModel();
+        STATUS_CODE InitModel();
     };
 }
 

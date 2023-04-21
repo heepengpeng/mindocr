@@ -2,7 +2,7 @@
 #define ARGS_H
 #include <gflags/gflags.h>
 #include <cstdint>
-DECLARE_string(input_imgaes_dir);
+DECLARE_string(input_images_dir);
 DECLARE_string(engine);
 DECLARE_string(device);
 DECLARE_int32(device_id);

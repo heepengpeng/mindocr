@@ -1,7 +1,7 @@
 #ifndef COLLECT_PROCESS_H
 #define COLLECT_PROCESS_H
 #include "../../framework/module_base.h"
-#include "../../error_code/error_code.h"
+#include "../../status_code/status_code.h"
 #include <map>
 #include <vector>
 namespace MindOCR
@@ -11,12 +11,12 @@ namespace MindOCR
     public:
         CollectProcess();
         ~CollectProcess();
-        APP_ERROR Init(const std::string &taskType, const std::string &resSaveDir, std::shared_ptr<BlockingQueue<std::shared_ptr<void>>> msgQueue);
-        APP_ERROR DeInit();
-        APP_ERROR Stop();
+        STATUS_CODE Init(const std::string &taskType, const std::string &resSaveDir, std::shared_ptr<BlockingQueue<std::shared_ptr<void>>> msgQueue);
+        STATUS_CODE DeInit();
+        STATUS_CODE Stop();
 
     protected:
-        APP_ERROR Process(std::shared_ptr<void> inputData);
+        STATUS_CODE Process(std::shared_ptr<void> inputData);
 
     private:
         std::map<uint32_t, uint32_t> imageSubRemaining;

@@ -1,6 +1,6 @@
 #ifndef MODULE_BASE_H
 #define MODULE_BASE_H
-#include "error_code/error_code.h"
+#include "../status_code/status_code.h"
 #include <cstdint>
 #include <memory>
 #include <atomic>
@@ -14,12 +14,12 @@ namespace MindOCR
     public:
         ModuleBase(){};
         ~ModuleBase(){};
-        virtual APP_ERROR Init();
-        virtual APP_ERROR DeInit(void) = 0;
+        virtual STATUS_CODE Init();
+        virtual STATUS_CODE DeInit(void) = 0;
         void SetInputVec(std::shared_ptr<BlockingQueue<std::shared_ptr<void>>> inputQueue);
         void SetOutputVec(std::shared_ptr<BlockingQueue<std::shared_ptr<void>>> outputQueue);
-        APP_ERROR Process(void);
-        APP_ERROR Stop(void);
+        STATUS_CODE Process(void);
+        STATUS_CODE Stop(void);
 
         void SendToNextModule(std::shared_ptr<void> outputData);
         const std::string GetModuleName();

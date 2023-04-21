@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <memory>
-#include "../../error_code/error_code.h"
+#include "../../status_code/status_code.h"
 namespace MindOCR
 {
     class DBPostProcess
@@ -11,8 +11,8 @@ namespace MindOCR
     public:
         DBPostProcess(){};
         ~DBPostProcess(){};
-        APP_ERROR Init();
-        APP_ERROR Run(std::shared_ptr<void> shrink_map, const uint32_t src_width, const uint32_t src_height);
+        STATUS_CODE Init();
+        STATUS_CODE Run(std::shared_ptr<void> shrink_map, const uint32_t src_width, const uint32_t src_height);
 
     private:
         const uint32_t maxCandidates = 1000;

@@ -3,15 +3,16 @@
 #include <string>
 #include <cstdint>
 #include "module_data_type.h"
-#include "error_code/error_code.h"
+#include "../status_code/status_code.h"
 #include "infer_engine/model_base.h"
+#include "module_data_type.h"
 namespace MindOCR
 {
     class Model
     {
     public:
-        APP_ERROR Init(const std::string &engineType, const std::string &modelPath, const std::string &deviceId);
-        APP_ERROR Infer(std::shared_ptr<void> &inputData, std::vector<std::shared_ptr<void>> &output);
+        STATUS_CODE Init(InferEngine engineType, ContextInfo &contextInfo);
+        STATUS_CODE Infer(std::shared_ptr<void> &inputData, std::vector<std::shared_ptr<void>> &output);
         std::shared_ptr<ShapeInfo> GetShapeInfo();
 
     private:
@@ -19,7 +20,7 @@ namespace MindOCR
 
     private:
         std::shared_ptr<void> model;
-        std::string engineType;
+        InferEngine engineType;
     };
 
 } // namespace MindOC
