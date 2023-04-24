@@ -1,11 +1,58 @@
 # MxBase 分析
 
 ## 使用的地方
-* MxBase:MxInit() 初始化
-* MxBase:ImageProcessor() 图像处理
-* MxBase:Model 模型
-* MxBase:Tensor 张量
-* MxBase:TensorDType 张量类型
-* MxBase:Image 图片
-* MxBase:ImageFormat::RGB_888 图片格式
-* MxBase:Size 大小
+### MxBase:MxInit() 初始化
+*  MxBase::Log::Init()
+*  MxBase::DeviceManager::GetInstance()->InitDevices()
+  * 检查 /lib/libmxbase.so 是否存在 (这个是咋来的)
+  * aclInit()
+  * aclrtGetDeviceCount()
+  * 失败调用 aclFinalize()
+### 类 MxBase:ImageProcessor 图像处理
+* Decode
+  * MxBase::DeviceManager::GetInstance()->SetDevices()
+    * InitDevices()
+    * aclrtCreateContext() 或  aclrSetCurrentContext()
+    * acldvppJpegDecodeAsync 或 aclvppJpegDecoderAsync
+### 类 MxBase:Model 模型
+* Model::Model(string &modelPath, int32_t deviceId)
+  * InitModel()
+    * MxBase::DeviceManager::GetInstance()->SetDevices()
+    * aclrtCreateStream()
+    * aclrtCreateConfigHandle()
+    * aclmdLoadWithConfig()
+    * aclmdlDestroyConfigHandle()
+  * GetModelInputDesc()
+    * aclmdGetNumInputs()
+    * aclmdGetInputDims() / aclmdGetInputDimsV2()
+    * aclmdGetInputDataType()
+    * aclmdGetInputFormat()
+  * GetDynamicDesc()
+    * aclGetDynamicBatch()
+    * aclGetDynamicHW()
+    * aclGetDynamicGearCount()
+    * aclGetDynamicDims()
+    * aclmdGetInputIndexByName()
+* Infer(vector<Tensor>& inputTensors)
+  * SetDevice()
+    * aclrtCreateContext() 或  aclrSetCurrentContext()
+  * SetInputTensors()
+    * aclrtMemory()
+  * checkInputType()
+    * aclrtGetInputDataType()
+  * ModelInference()
+    * aclmdlCreateDataset(),aclCreateDataBuffer(), aclmdlAddDatasetBuffer()
+    * aclmdSetDynamicBatchSize()
+    * aclmdlExecuteAsync(modelId_,inputDataset, outputDataset, stream_)
+    * aclrtSyncronizeStream()
+    * aclDestroyDataBuffer()
+
+### MxBase:Tensor 张量
+* std::shared_ptr<void> data
+### MxBase:TensorDType 张量类型  枚举类
+### MxBase:Image 图片类
+* std::shared_ptr<uint8_t> imageData_
+### MxBase:ImageFormat::RGB_888 图片格式
+### MxBase:Size 大小
+* uint32_t width
+* uint32_t height
