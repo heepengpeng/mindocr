@@ -1,7 +1,7 @@
 #ifndef COLLECT_PROCESS_H
 #define COLLECT_PROCESS_H
-#include "../../framework/ModuleBase.h"
-#include "../../status_code/status_code.h"
+#include "../../Framework//ModuleBase.h"
+#include "../../StatusCode/StatusCode.h"
 #include <map>
 #include <vector>
 namespace MindOCR

@@ -1,39 +1,21 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(OCRCppInfer)
-add_definition(-D_GLIBCXX_USE_CXX!!_ABI=0)
-add_definitions(-Dgoogle=mindxsdk_private)
+add_executable(main infer.cpp Utils/DataUtils.h Utils/StringUtils.cpp Utils/StringUtils.h Framework/ModuleInfer.cpp)
+find_package(OpenCV CONFIG REQUIRED)
 
-set(PROJECT_SRC_ROOT ${CMAKE_CURRENT_LIST_DIR})
-set(CMAKE_MODULE_PATH ${PROJECT_SRC_ROOT}/CMake)
-set(CMAKE_SKIP_BUILD_RPATH  True)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SRC_ROOT}/dist)
-add_compile_options(-std=c++11 -fPIE -fstack-protector-all -Wall)
-add_definitions(-DENABLE_DVPP_INTERFACE)
+include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}/runtime/
+        ${CMAKE_CURRENT_SOURCE_DIR}/BlockingQueue/
+        ${CMAKE_CURRENT_SOURCE_DIR}/CommandParser/
+        ${CMAKE_CURRENT_SOURCE_DIR}/DataType/
+        ${CMAKE_CURRENT_SOURCE_DIR}/Framework/
+        ${CMAKE_CURRENT_SOURCE_DIR}/Log/
+        ${CMAKE_CURRENT_SOURCE_DIR}/Pipeline/
+        ${CMAKE_CURRENT_SOURCE_DIR}/Processors/
+        ${CMAKE_CURRENT_SOURCE_DIR}/StatusCode/
+        ${CMAKE_CURRENT_SOURCE_DIR}/Utils/
 
-# find header
-set(HEADER_FILE_DIR
-        ${PROJECT_SRC_ROOT}/BlockingQueue
-        ${PROJECT_SRC_ROOT}/CommandParser
-        ${PROJECT_SRC_ROOT}/DataType
-        ${PROJECT_SRC_ROOT}/Framework
-        ${PROJECT_SRC_ROOT}/Framework/InferEngine
-        ${PROJECT_SRC_ROOT}/Operators/Postprocess
-        ${PROJECT_SRC_ROOT}/Operators/Preprocess
-        ${PROJECT_SRC_ROOT}/Pipeline
-        ${PROJECT_SRC_ROOT}/Processors/Classification
-        ${PROJECT_SRC_ROOT}/Processors/Common
-        ${PROJECT_SRC_ROOT}/Processors/Detection
-        ${PROJECT_SRC_ROOT}/Processors/Recognition
-        ${PROJECT_SRC_ROOT}/StatusCode
-        )
+)  # 添加头文件寻找路径
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/runtime/lib)  # 添加库文件寻找路径
 
-include_directories(${HEADER_FILE_DIR})
-
-#find src
-file(GLOB_RECURSE SRC_FILE
-        ${PROJECT_SRC_ROOT}/main.cpp
-        )
-
-add_executable(main ${SRC_FILE} Utils/SafeUtils.cpp Utils/SafeUtils.h CommandParser/CommandParser.h)
-
-target_link_libraries(main, ascendcl acl_dvpp opencv_world mxbase cpprest glog pthread -Wl,-z,relro,-z,now,-z,noexecstack -pie -s)
+target_link_libraries(main PRIVATE opencv_ml opencv_dnn opencv_core opencv_flann )

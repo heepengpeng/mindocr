@@ -1,7 +1,7 @@
 #ifndef DECODE_PRECOSS_H
 #define DECODE_PRECOSS_H
 #include "../../framework/ModuleBase.h"
-#include "../../status_code/status_code.h"
+#include "../../StatusCode/StatusCode.h"
 namespace MindOCR
 {
     class DecodeProcess : public MindOCR::ModuleBase

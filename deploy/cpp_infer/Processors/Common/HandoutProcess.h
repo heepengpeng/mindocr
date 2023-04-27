@@ -1,7 +1,7 @@
 #ifndef HEADCOUNT_PROCESS_H
 #define HEADCOUNT_PROCESS_H
-#include "../../framework/ModuleBase.h"
-#include "../../status_code/status_code.h"
+#include "../../Framework/ModuleBase.h"
+#include "../../StatusCode/StatusCode.h"
 namespace MindOCR
 {
     class HandoutProcess : public MindOCR::ModuleBase

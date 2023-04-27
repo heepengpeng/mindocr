@@ -16,7 +16,7 @@
     * acldvppJpegDecodeAsync 或 aclvppJpegDecoderAsync
 ### 类 MxBase:Model 模型   2k
 * Model::Model(string &modelPath, int32_t deviceId)
-  * InitModel()
+  * Init()
     * MxBase::DeviceManager::GetInstance()->SetDevices()
     * aclrtCreateStream()
     * aclrtCreateConfigHandle()
