@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ce7be578-1019-4c58-900b-428f752d0672" name="Changes" comment="[feat] add cpp infer">
+      <change afterPath="$PROJECT_DIR$/core/model/backend/lite_model.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/core/model/backend/lite_model.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../CppInfer/.idea/CppInfer.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../API.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BlockingQueue/BlockingQueue.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CommandParser/CommandParser.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DataType/CommonData.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../DataType/MessageData.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Framework/InferEngine/LiteModel.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Framework/InferEngine/LiteModel.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Framework/InferEngine/MindxModel.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Framework/InferEngine/ModelBase.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Framework/ModuleBase.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Framework/ModuleInfer.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Framework/ModuleInfer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Framework/ModuleManager.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Log/Log.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Log/log.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MxBase分析.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Operators/Postprocess/DbPostprocess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Operators/Postprocess/RecPostprocess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Operators/Preprocess/Builder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Operators/Preprocess/Transforms.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Pipeline/Pipeline.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Pipeline/PipelineArgs.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Classification/ClsInferProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Classification/ClsPreProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Common/CollectProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Common/DecodeProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Common/HandoutProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Detection/DetInferProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Detection/DetPostProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Detection/DetPreProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Recognition/RecInferProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Recognition/RecPostPress.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Processors/Recognition/RecPreProcess.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../StatusCode/StatusCode.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utils/DataUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utils/SafeUtils.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utils/SafeUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utils/StringUtils.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Utils/StringUtils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../img.png" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/../../.." value="cpp_infer_mxOCR" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="GitRewordedCommitMessages">
+    <option name="commitMessagesMapping">
+      <RewordedCommitMessageMapping>
+        <option name="originalMessage" value="[feat] add cpp infer" />
+        <option name="rewordedMessage" value="[feat] add cpp infer" />
+      </RewordedCommitMessageMapping>
+    </option>
+    <option name="currentCommit" value="1" />
+    <option name="onto" value="b588cf993d31d9ed163cf471b7eca7dfb5c1658b" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2023" />
+    <option name="minorVersion" value="1.1" />
+  </component>
+  <component name="ProjectId" id="2Q07UNujokbJXVL4dCrNOUVD9sk" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "D:/010Code/007OCR/003github/001hpp/mindocr/deploy/cpp_infer",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ce7be578-1019-4c58-900b-428f752d0672" name="Changes" comment="" />
+      <created>1684478660420</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1684478660420</updated>
+      <workItem from="1684478661460" duration="20813000" />
+      <workItem from="1684982855256" duration="16000" />
+      <workItem from="1684984430748" duration="1839000" />
+    </task>
+    <task id="LOCAL-00001" summary="[feat] add cpp infer">
+      <created>1684479692099</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1684479692099</updated>
+    </task>
+    <task id="LOCAL-00002" summary="[feat] add cpp infer">
+      <created>1684483181482</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1684483181482</updated>
+    </task>
+    <task id="LOCAL-00003" summary="[feat] add cpp infer">
+      <created>1684912517269</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1684912517269</updated>
+    </task>
+    <task id="LOCAL-00004" summary="[feat] add cpp infer">
+      <created>1684922993206</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1684922993206</updated>
+    </task>
+    <task id="LOCAL-00005" summary="[feat] add cpp infer">
+      <created>1684923006006</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1684923006006</updated>
+    </task>
+    <task id="LOCAL-00006" summary="[feat] add cpp infer">
+      <created>1684923293563</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1684923293563</updated>
+    </task>
+    <task id="LOCAL-00007" summary="[feat] add cpp infer">
+      <created>1684978154119</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1684978154119</updated>
+    </task>
+    <task id="LOCAL-00008" summary="[feat] add cpp infer">
+      <created>1684978559711</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1684978559711</updated>
+    </task>
+    <task id="LOCAL-00009" summary="[feat] add cpp infer">
+      <created>1684978921469</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1684978921469</updated>
+    </task>
+    <task id="LOCAL-00010" summary="[feat] add cpp infer">
+      <created>1684979004483</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1684979004483</updated>
+    </task>
+    <task id="LOCAL-00011" summary="[feat] add cpp infer">
+      <created>1684979432257</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1684979432257</updated>
+    </task>
+    <task id="LOCAL-00012" summary="[feat] add cpp infer">
+      <created>1684979531070</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1684979531070</updated>
+    </task>
+    <task id="LOCAL-00013" summary="[feat] add cpp infer">
+      <created>1684980097391</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1684980097391</updated>
+    </task>
+    <task id="LOCAL-00014" summary="[feat] add cpp infer">
+      <created>1684980536178</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1684980536178</updated>
+    </task>
+    <task id="LOCAL-00015" summary="[feat] add cpp infer">
+      <created>1684980790136</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1684980790136</updated>
+    </task>
+    <task id="LOCAL-00016" summary="[feat] add cpp infer">
+      <created>1684980978853</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1684980978853</updated>
+    </task>
+    <task id="LOCAL-00017" summary="[feat] add cpp infer">
+      <created>1684981270424</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1684981270424</updated>
+    </task>
+    <task id="LOCAL-00018" summary="[feat] add cpp infer">
+      <created>1684981677054</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1684981677054</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticEditVcpkgJson value="false" />
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticFoundErrors value="true" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="cpp_infer_mxOCR" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="[feat] add cpp infer" />
+    <option name="LAST_COMMIT_MESSAGE" value="[feat] add cpp infer" />
+  </component>
+</project>
