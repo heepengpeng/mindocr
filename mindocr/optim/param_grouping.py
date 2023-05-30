@@ -32,13 +32,15 @@ def grouping_svtr(params, weight_decay):
     decay_params = []
     no_decay_params = []
 
-    filter_keys = ['beta', 'gamma', 'pos_emb', 'bias'] # correspond to nn.BatchNorm, nn.LayerNorm, and position embedding layer if named as 'pos_emb'. TODO: check svtr naming.
+    filter_keys = ['norm', 'pos_embed']
 
     for param in params:
         filter_param = False
         for k in filter_keys:
-            if k in param.name:
+            # also filter the one dimensional parameters
+            if k in param.name or len(param.shape) == 1:
                 filter_param = True
+                break
 
         if filter_param:
             no_decay_params.append(param)
@@ -69,7 +71,7 @@ def create_group_params(params, weight_decay=0, grouping_strategy=None, no_weigh
     # TODO: assert valid arg names
     gp = grouping_strategy
 
-    print(f'INFO: param grouping startegy: {grouping_strategy}, no_weight_decay_params: ', no_weight_decay_params)
+    #print(f'INFO: param grouping startegy: {grouping_strategy}, no_weight_decay_params: ', no_weight_decay_params)
     if gp is not None:
         if weight_decay == 0:
             print("WARNING: weight decay is 0 in param grouping, which is meaningless. Please check config setting.")

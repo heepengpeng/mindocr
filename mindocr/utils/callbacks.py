@@ -2,103 +2,28 @@ import os
 import time
 from tqdm import tqdm
 from typing import List
-import shutil
+from packaging import version
 
-import numpy as np
 import mindspore as ms
+from mindspore.ops import functional as F
+from mindspore.common import dtype as mstype
 from mindspore import save_checkpoint
 from mindspore.train.callback._callback import Callback, _handle_loss
-from .visualize import draw_bboxes, show_imgs, recover_image
+from .checkpoint import CheckpointManager
+from .visualize import draw_boxes, show_imgs, recover_image
 from .recorder import PerfRecorder
+from .misc import AverageMeter
+from .evaluator import Evaluator
 
-__all__ = ['Evaluator', 'EvalSaveCallback']
+__all__ = ["EvalSaveCallback"]
 
+# WARNING: `mindspore.ms_function` will be deprecated and removed in a future version.
+if version.parse(ms.__version__) >= version.parse("2.0.0rc"):
+    from mindspore import jit
+else:
+    from mindspore import ms_function
 
-class Evaluator:
-    """
-    Args:
-        metric:
-    """
-    def __init__(self, network, loss_fn=None, postprocessor=None, metrics=None, visualize=False, verbose=False,
-                 **kwargs):
-        self.net = network
-        self.postprocessor = postprocessor
-        # FIXME: process when metrics is not None
-        self.metrics = metrics if isinstance(metrics, List) else [metrics]
-        self.metric_names = []
-        for m in metrics:
-            assert hasattr(m, 'metric_names') and isinstance(m.metric_names, List), f'Metric object must contain `metric_names` attribute to indicate the metric names as a List type, but not found in {m.__class__.__name__}'
-            self.metric_names += m.metric_names
-
-        self.visualize = visualize
-        self.verbose = verbose
-        eval_loss = False
-        if loss_fn is not None:
-            eval_loss = True
-            self.loss_fn = loss_fn
-        # TODO: add support for computing evaluation loss
-        assert eval_loss == False, 'not impl'
-
-    def eval(self, dataloader, num_columns_to_net=1, num_keys_of_labels=None):
-        """
-        Args:
-            dataloader (Dataset): data iterator which generates tuple of Tensor defined by the transform pipeline and 'output_columns'
-        """
-        eval_res = {}
-
-        self.net.set_train(False)
-        iterator = dataloader.create_tuple_iterator(num_epochs=1, output_numpy=False, do_copy=False)
-        for m in self.metrics:
-            m.clear()
-
-        for i, data in tqdm(enumerate(iterator), total=dataloader.get_dataset_size()):
-            # start = time.time()
-            # TODO: if network input is not just an image.
-            # assume the first element is image
-            img = data[0]  # ms.Tensor(batch[0])
-            gt = data[1:]  # ground truth,  (polys, ignore_tags) for det,
-
-            # TODO: in graph mode, the output dict is somehow converted to tuple. Is the order of in tuple the same as dict binary, thresh, thres_binary? to check
-            # {'binary':, 'thresh: ','thresh_binary': } for text detect; {'head_out': } for text rec
-            net_preds = self.net(img)
-            # net_inputs = data[:num_columns_to_net]
-            # gt = data[num_columns_to_net:] # ground truth
-            # preds = self.net(*net_inputs) # head output is dict. for text det {'binary', ...},  for text rec, {'head_out': }
-            # print('net predictions', preds)
-
-            if self.postprocessor is not None:
-                preds = self.postprocessor(net_preds)  # {'polygons':, 'scores':} for text det
-
-            # metric internal update
-            for m in self.metrics:
-                m.update(preds, gt)
-
-            if self.verbose:
-                if isinstance(net_preds, tuple):
-                    print('pred binary map:', net_preds[0].shape, net_preds[0].max(), net_preds[0].min())
-                    print('thresh binary map:', net_preds[2].shape, net_preds[2].max(), net_preds[2].min())
-                else:
-                    print('pred binary map:', net_preds['binary'].shape, net_preds['binary'].max(),
-                          net_preds['binary'].min())
-                    print('thresh binary map:', net_preds['thresh_binary'].shape, net_preds['thresh_binary'].max(),
-                          net_preds['binary'].min())
-                print('pred polys:', preds['polygons'])
-
-            if self.visualize:
-                img = img[0].asnumpy()
-                assert ('polys' in preds) or ('polygons' in preds), 'Only support detection'
-                gt_img_polys = draw_bboxes(recover_image(img), gt[0].asnumpy())
-                pred_img_polys = draw_bboxes(recover_image(img), preds['polygons'].asnumpy())
-                show_imgs([gt_img_polys, pred_img_polys], show=False, save_path=f'results/det_vis/gt_pred_{i}.png')
-
-        for m in self.metrics:
-            res_dict = m.eval()
-            eval_res.update(res_dict)
-        # fps = total_frame / total_time
-
-        self.net.set_train(True)
-
-        return eval_res
+    jit = ms_function
 
 
 class EvalSaveCallback(Callback):
@@ -108,32 +33,61 @@ class EvalSaveCallback(Callback):
     Args:
         network (nn.Cell): network (without loss)
         loader (Dataset): dataloader
-        saving_config (dict):
+        ema: if not None, the ema params will be loaded to the network for evaluation.
     """
-    def __init__(self,
-                 network,
-                 loader=None,
-                 loss_fn=None,
-                 postprocessor=None,
-                 metrics=None,
-                 rank_id=0,
-                 ckpt_save_dir='./',
-                 main_indicator='hmean',
-                 val_interval=1,
-                 val_start_epoch=1,
-                 ):
+
+    def __init__(
+        self,
+        network,
+        loader=None,
+        loss_fn=None,
+        postprocessor=None,
+        metrics=None,
+        pred_cast_fp32=False,
+        rank_id=0,
+        device_num=None,
+        logger=None,
+        batch_size=20,
+        ckpt_save_dir="./",
+        main_indicator="hmean",
+        ema=None,
+        loader_output_columns=[],
+        input_indices=None,
+        label_indices=None,
+        meta_data_indices=None,
+        val_interval=1,
+        val_start_epoch=1,
+        log_interval=1,
+        ckpt_save_policy="top_k",
+        ckpt_max_keep=10,
+    ):
         self.rank_id = rank_id
         self.is_main_device = rank_id in [0, None]
         self.loader_eval = loader
         self.network = network
+        self.ema = ema
+        self.logger = print if logger is None else logger.info
         self.val_interval = val_interval
         self.val_start_epoch = val_start_epoch
+        self.log_interval = log_interval
+        self.batch_size = batch_size
         if self.loader_eval is not None:
-            self.net_evaluator = Evaluator(network, loss_fn, postprocessor, metrics)
+            self.net_evaluator = Evaluator(
+                network,
+                loader,
+                loss_fn,
+                postprocessor,
+                metrics,
+                pred_cast_fp32=pred_cast_fp32,
+                loader_output_columns=loader_output_columns,
+                input_indices=input_indices,
+                label_indices=label_indices,
+                meta_data_indices=meta_data_indices,
+            )
             self.main_indicator = main_indicator
             self.best_perf = -1e8
         else:
-            self.main_indicator = 'train_loss'
+            self.main_indicator = "train_loss"
             self.best_perf = 1e8
 
         self.ckpt_save_dir = ckpt_save_dir
@@ -141,9 +95,30 @@ class EvalSaveCallback(Callback):
             os.makedirs(ckpt_save_dir)
 
         self.last_epoch_end_time = time.time()
-
-    def on_train_step_begin(self, run_context):
+        self.epoch_start_time = time.time()
         self.step_start_time = time.time()
+
+        self._loss_avg_meter = AverageMeter()
+
+        self._reduce_sum = ms.ops.AllReduce()
+        self._device_num = device_num
+        # lamda expression is not supported in jit
+        self._loss_reduce = self._reduce if device_num is not None else lambda x: x
+
+        if self.is_main_device:
+            self.ckpt_save_policy = ckpt_save_policy
+            self.ckpt_manager = CheckpointManager(
+                ckpt_save_dir,
+                ckpt_save_policy,
+                k=ckpt_max_keep,
+                prefer_low_perf=(self.main_indicator == "train_loss"),
+            )
+
+    @jit
+    def _reduce(self, x):
+        return (
+            self._reduce_sum(x) / self._device_num
+        )  # average value across all devices
 
     def on_train_step_end(self, run_context):
         """
@@ -158,8 +133,23 @@ class EvalSaveCallback(Callback):
         data_sink_mode = cb_params.dataset_sink_mode
         cur_step_in_epoch = (cb_params.cur_step_num - 1) % cb_params.batch_num + 1
 
-        # TODO: need to stop gradient here ?
-        self._losses.append(loss.asnumpy())
+        self._loss_avg_meter.update(self._loss_reduce(loss))
+
+        if not data_sink_mode and cur_step_in_epoch % self.log_interval == 0:
+            opt = cb_params.train_network.optimizer
+            learning_rate = opt.learning_rate
+            cur_lr = learning_rate(opt.global_step - 1).asnumpy().squeeze()
+            per_step_time = (
+                (time.time() - self.step_start_time) * 1000 / self.log_interval
+            )
+            fps = self.batch_size * 1000 / per_step_time
+            loss = self._loss_avg_meter.val.asnumpy()
+            msg = (
+                f"epoch: [{cur_epoch}/{cb_params.epoch_num}] step: [{cur_step_in_epoch}/{cb_params.batch_num}], "
+                f"loss: {loss:.6f}, lr: {cur_lr:.6f}, per step time: {per_step_time:.3f} ms, fps: {fps:.2f} img/s"
+            )
+            self.logger(msg)
+            self.step_start_time = time.time()
 
     def on_train_epoch_begin(self, run_context):
         """
@@ -167,8 +157,9 @@ class EvalSaveCallback(Callback):
         Args:
             run_context (RunContext): Include some information of the model.
         """
-        self._losses = []
+        self._loss_avg_meter.reset()
         self.epoch_start_time = time.time()
+        self.step_start_time = time.time()
 
     def on_train_epoch_end(self, run_context):
         """
@@ -178,26 +169,36 @@ class EvalSaveCallback(Callback):
             run_context (RunContext): Include some information of the model.
         """
         cb_params = run_context.original_args()
-        loss = cb_params.net_outputs
         cur_epoch = cb_params.cur_epoch_num
-        train_time = (time.time() - self.epoch_start_time)
-        train_loss = np.average(self._losses) # TODO: aggregate training loss for multiple cards
+        train_time = time.time() - self.epoch_start_time
+        train_loss = self._loss_avg_meter.avg.asnumpy()
 
-        print(
-            f"Epoch: {cur_epoch}, "
-            f"loss:{train_loss:.5f}, training time:{train_time:.3f}s"
+        epoch_time = time.time() - self.epoch_start_time
+        per_step_time = epoch_time * 1000 / cb_params.batch_num
+        fps = 1000 * self.batch_size / per_step_time
+        msg = (
+            f"epoch: [{cur_epoch}/{cb_params.epoch_num}], loss: {train_loss:.6f}, "
+            f"epoch time: {epoch_time:.3f} s, per step time: {per_step_time:.3f} ms, fps: {fps:.2f} img/s"
         )
+        self.logger(msg)
 
         eval_done = False
-        if (self.loader_eval is not None):
-            if cur_epoch >= self.val_start_epoch and (cur_epoch - self.val_start_epoch) % self.val_interval == 0:
+        if self.loader_eval is not None:
+            if (
+                cur_epoch >= self.val_start_epoch
+                and (cur_epoch - self.val_start_epoch) % self.val_interval == 0
+            ):
                 eval_start = time.time()
-                measures = self.net_evaluator.eval(self.loader_eval)
+                if self.ema is not None:
+                    # swap ema weight and network weight
+                    self.ema.swap_before_eval()
+                measures = self.net_evaluator.eval()
+
                 eval_done = True
                 if self.is_main_device:
                     perf = measures[self.main_indicator]
                     eval_time = time.time() - eval_start
-                    print(f'Performance: {measures}, eval time: {eval_time}')
+                    self.logger(f"Performance: {measures}, eval time: {eval_time}")
             else:
                 measures = {m_name: None for m_name in self.net_evaluator.metric_names}
                 eval_time = 0
@@ -208,105 +209,64 @@ class EvalSaveCallback(Callback):
         # save best models and results using card 0
         if self.is_main_device:
             # save best models
-            if (self.main_indicator == 'train_loss' and perf < self.best_perf) \
-                or (self.main_indicator != 'train_loss' and eval_done and perf > self.best_perf): # when val_while_train enabled, only find best checkpoint after eval done.
-                    self.best_perf = perf
-                    save_checkpoint(self.network, os.path.join(self.ckpt_save_dir, 'best.ckpt'))
-                    print(f'=> Best {self.main_indicator}: {self.best_perf}, checkpoint saved.')
+            if (self.main_indicator == "train_loss" and perf < self.best_perf) or (
+                self.main_indicator != "train_loss"
+                and eval_done
+                and perf > self.best_perf
+            ):  # when val_while_train enabled, only find best checkpoint after eval done.
+                self.best_perf = perf
+                # ema weight will be saved if enabled.
+                save_checkpoint(
+                    self.network, os.path.join(self.ckpt_save_dir, "best.ckpt")
+                )
+
+                self.logger(
+                    f"=> Best {self.main_indicator}: {self.best_perf}, checkpoint saved."
+                )
+
+            # save history checkpoints
+            self.ckpt_manager.save(self.network, perf, ckpt_name=f"e{cur_epoch}.ckpt")
 
             # record results
             if cur_epoch == 1:
                 if self.loader_eval is not None:
-                    perf_columns = ['loss'] + list(measures.keys()) + ['train_time', 'eval_time']
+                    perf_columns = (
+                        ["loss"] + list(measures.keys()) + ["train_time", "eval_time"]
+                    )
                 else:
-                    perf_columns =  ['loss', 'train_time']
-                self.rec = PerfRecorder(self.ckpt_save_dir, metric_names=perf_columns) # record column names
+                    perf_columns = ["loss", "train_time"]
+                self.rec = PerfRecorder(
+                    self.ckpt_save_dir, metric_names=perf_columns
+                )  # record column names
 
             if self.loader_eval is not None:
-                epoch_perf_values = [cur_epoch, train_loss] + list(measures.values()) + [train_time, eval_time]
+                epoch_perf_values = (
+                    [cur_epoch, train_loss]
+                    + list(measures.values())
+                    + [train_time, eval_time]
+                )
             else:
                 epoch_perf_values = [cur_epoch, train_loss, train_time]
-            self.rec.add(*epoch_perf_values) # record column values
+            self.rec.add(*epoch_perf_values)  # record column values
 
-        tot_time = time.time()-self.last_epoch_end_time
+        # swap back network weight and ema weight. MUST execute after model saving and before next-step training
+        if (self.ema is not None) and eval_done:
+            self.ema.swap_after_eval()
+
+        tot_time = time.time() - self.last_epoch_end_time
         self.last_epoch_end_time = time.time()
-        print(f'Total time cost for epoch {cur_epoch}: {tot_time}')
 
     def on_train_end(self, run_context):
         if self.is_main_device:
             self.rec.save_curves()  # save performance curve figure
-            print(f'=> Best {self.main_indicator}: {self.best_perf} \nTraining completed!')
+            self.logger(
+                f"=> Best {self.main_indicator}: {self.best_perf} \nTraining completed!"
+            )
 
-
-class LossCallBack(Callback):
-    """
-    Monitor the loss in training.
-    If the loss in NAN or INF terminating training.
-    """
-
-    def __init__(self, epoch_size, batch_size, logger, per_print_times=1, global_steps=0):
-        super(LossCallBack, self).__init__()
-        self.epoch_size = epoch_size
-        self.batch_size = batch_size
-        self.logger = logger
-        self.global_steps = global_steps
-        self._per_print_times = per_print_times
-        self.step_start_time = time.time()
-        self.epoch_start_time = time.time()
-
-    def _handle_loss(self, net_outputs):
-        """Handle loss"""
-        if isinstance(net_outputs, (tuple, list)):
-            if isinstance(net_outputs[0], ms.Tensor) and isinstance(net_outputs[0].asnumpy(), np.ndarray):
-                loss = net_outputs[0].asnumpy()
-        elif isinstance(net_outputs, ms.Tensor) and isinstance(net_outputs.asnumpy(), np.ndarray):
-            loss = float(np.mean(net_outputs.asumpy()))
-        return loss
-
-    def on_train_epoch_begin(self, run_context):
-        self.epoch_start_time = time.time()
-        self.step_start_time = time.time()
-
-    def on_train_step_end(self, run_context):
-        cb_params = run_context.original_args()
-        loss = self._handle_loss(cb_params.net_outputs)
-        overflow = str(cb_params.net_outputs[1].asnumpy())
-        cur_epoch = cb_params.cur_epoch_num
-        data_sink_mode = cb_params.get('dataset_sink_mode', False)
-        if not data_sink_mode:
-            cur_step_in_epoch = (cb_params.cur_step_num - 1) % cb_params.batch_num + 1
-            if isinstance(loss, float) and (np.isnan(loss) or np.isinf(loss)):
-                raise ValueError(
-                    "epoch: {} step: {}. Invalid loss, terminating training.".format(cur_epoch, cur_step_in_epoch))
-
-            if cur_step_in_epoch % self._per_print_times == 0:
-                per_step_time = (time.time() - self.step_start_time) * 1000 / self._per_print_times
-                fps = self.batch_size * 1000 / per_step_time
-                lr = cb_params.train_network.optimizer.learning_rate
-                cur_lr = lr(ms.Tensor(self.global_steps)).asnumpy()
-                msg = "epoch: [%s/%s] step: [%s/%s], loss: %.6f, overflow: %s, lr: %.6f, per step time: %.3f ms, fps: %.2f img/s" % (
-                    cur_epoch, self.epoch_size, cur_step_in_epoch, cb_params.batch_num,
-                    loss, overflow, cur_lr, per_step_time, fps)
-                self.logger.info(msg)
-                self.step_start_time = time.time()
-        self.global_steps += 1
-
-    def on_train_epoch_end(self, run_context):
-        cb_params = run_context.original_args()
-        loss = self._handle_loss(cb_params.net_outputs)
-        cur_epoch_num = cb_params.cur_epoch_num
-        epoch_time = time.time() - self.epoch_start_time
-        per_step_time = epoch_time * 1000 / cb_params.batch_num
-        fps = 1000 * self.batch_size / per_step_time
-        msg = 'epoch: [%s/%s] loss: %.6f, epoch time: %.3f s, per step time: %.3f ms, fps: %.2f' % (
-            cur_epoch_num, self.epoch_size, loss, epoch_time, per_step_time, fps)
-        self.logger.info(msg)
-
-
-class ResumeCallback(Callback):
-    def __init__(self, start_epoch_num=0):
-        super(ResumeCallback, self).__init__()
-        self.start_epoch_num = start_epoch_num
-
-    def on_train_epoch_begin(self, run_context):
-        run_context.original_args().cur_epoch_num += self.start_epoch_num
+            if self.ckpt_save_policy == "top_k":
+                log_str = f"Top K checkpoints:\n{self.main_indicator}\tcheckpoint\n"
+                for p, ckpt_name in self.ckpt_manager.get_ckpt_queue():
+                    log_str += (
+                        f"{p:.4f}\t{os.path.join(self.ckpt_save_dir, ckpt_name)}\n"
+                    )
+                self.logger(log_str)

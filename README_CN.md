@@ -50,7 +50,7 @@ pip install -r requirements.txt
 
 
 > 注意：
-> - 如果[使用MX Engine推理](#21-使用mx-engine推理)，Python版本需为3.9。
+> - 如果[使用ACL推理](#21-使用mindspore-lite和acl推理)，Python版本需为3.9。
 > - 如果遇到scikit_image导入错误，参考[此处](https://github.com/opencv/opencv/issues/14884)，你需要设置环境变量`$LD_PRELOAD`，命令如下。替换`path/to`为你的目录。
 >   ```shell
 >   export LD_PRELOAD=path/to/scikit_image.libs/libgomp-d22c30c5.so.1.0.0:$LD_PRELOAD
@@ -85,47 +85,80 @@ MindOCR支持多种文本识别模型及数据集，在此我们使用**CRNN**�
 
 ### 2. 推理与部署
 
-#### 2.1 使用MX Engine推理
+#### 2.1 使用MindSpore Lite和ACL推理(Ascend 310)
 
-MX ([MindX](https://www.hiascend.com/zh/software/mindx-sdk)的缩写) 是一个支持昇腾设备高效推理与部署的工具。
+MindOCR集成了[MindSpore Lite](https://www.mindspore.cn/lite)和[ACL](https://www.hiascend.com/document/detail/zh/canncommercial/63RC1/inferapplicationdev/aclcppdevg/aclcppdevg_000004.html)推理后端，
+集成了文本检测、分类和识别串联推理。
 
-MindOCR集成了MX推理引擎，支持文本检测识别任务，请参考[mx_infer](docs/cn/inference_tutorial_cn.md)。
+具体说明请参考[MindOCR 310推理](docs/cn/inference/inference_tutorial_cn.md)。
 
+#### 2.2 使用原生MindSpore在线推理(CPU/GPU/Ascend 910)
 
-#### 2.2 使用Lite推理 
+MindOCR提供易用的文本检测识别推理工具，支持CPU/GPU/Ascend 910硬件平台。在线推理基于使用MindOCR训练完成的模型进行推理。
 
-敬请期待
-
-#### 2.3 使用原生MindSpore推理
-
-敬请期待
+具体用法和效果请参考 [MindOCR在线推理](tools/infer/text/README.md)。
 
 ## 模型列表
 
 <details open>
 <summary>文本检测</summary>
 
-- [x] [DBNet](https://arxiv.org/abs/1911.08947) (AAAI'2020) 
-- [x] [DBNet++](https://arxiv.org/abs/2202.10304) (TPAMI'2022)
-- [ ] [FCENet](https://arxiv.org/abs/2104.10442) (CVPR'2021) [开发中]
+- [x] [DBNet](configs/det/dbnet/README.md) (AAAI'2020) 
+- [x] [DBNet++](configs/det/dbnet/README.md) (TPAMI'2022)
+- [x] [PSENet](configs/det/psenet/README.md) (CVPR'2019)
+- [ ] [EAST](https://arxiv.org/abs/1704.03155)(CVPR'2017) [coming soon]
+- [ ] [FCENet](https://arxiv.org/abs/2104.10442) (CVPR'2021) [coming soon]
 
 </details>
 
 <details open>
 <summary>文本识别</summary>
 
-- [x] [CRNN](https://arxiv.org/abs/1507.05717) (TPAMI'2016)
-- [ ] [ABINet](https://arxiv.org/abs/2103.06495) (CVPR'2021) [开发中]
-- [ ] [SVTR](https://arxiv.org/abs/2205.00159) (IJCAI'2022) [仅推理]
+
+- [x] [CRNN](configs/rec/crnn/README.md) (TPAMI'2016)
+- [x] [CRNN-Seq2Seq/RARE](configs/rec/rare/README.md) (CVPR'2016)
+- [x] [SVTR](configs/rec/svtr/README.md) (IJCAI'2022) 
+- [ ] [ABINet](https://arxiv.org/abs/2103.06495) (CVPR'2021) [coming soon]
 
 
 模型训练的配置及性能结果请见[configs](./configs).
 
-基于MX引擎的推理性能结果及支持模型列表，请见[mx inference performance](docs/cn/inference_models_cn.md) 
+MindSpore Lite和ACL模型推理的支持列表，请见[MindOCR模型推理支持列表](docs/cn/inference/models_list_cn.md)和[第三方模型推理支持列表](docs/cn/inference/models_list_thirdparty_cn.md).
+
+## 数据集
+### 下载
+
+我们提供以下数据集的下载说明。
+
+<details open>
+<summary>文本检测</summary>
+
+- [x] ICDAR2015 [论文]((https://rrc.cvc.uab.es/files/short_rrc_2015.pdf)) [主页]((https://rrc.cvc.uab.es/?ch=4)) [下载说明](docs/cn/datasets/icdar2015_CN.md)
+
+- [x] Total-Text [论文](https://arxiv.org/abs/1710.10400) [主页](https://github.com/cs-chan/Total-Text-Dataset/tree/master/Dataset) [下载说明](docs/cn/datasets/totaltext_CN.md)
+
+- [x] Syntext150k [论文](https://arxiv.org/abs/2002.10200) [主页](https://github.com/aim-uofa/AdelaiDet) [下载说明](docs/cn/datasets/syntext150k_CN.md)
+
+- [x] MLT2017 [论文](https://ieeexplore.ieee.org/abstract/document/8270168) [主页](https://rrc.cvc.uab.es/?ch=8&com=introduction) [下载说明](docs/cn/datasets/mlt2017_CN.md)
+
+- [x] MSRA-TD500 [论文](https://ieeexplore.ieee.org/abstract/document/6247787) [主页](http://www.iapr-tc11.org/mediawiki/index.php/MSRA_Text_Detection_500_Database_(MSRA-TD500)) [下载说明](docs/cn/datasets/td500_CN.md)
+
+- [x] SCUT-CTW1500 [论文](https://www.sciencedirect.com/science/article/pii/S0031320319300664) [主页](https://github.com/Yuliang-Liu/Curve-Text-Detector) [下载说明](docs/cn/datasets/ctw1500_CN.md)
+
+</details>
+
+### 转换
+
+在 `DATASETS_DIR` 文件夹中下载这些数据集后，您可以运行 `bash tools/convert_datasets.sh` 将所有下载的数据集转换为目标格式。[这里](tools/dataset_converters/README_CN.md)有一个 icdar2015 数据集转换的例子。
+
 
 ## 重要信息
 
 ### 变更日志
+- 2023/05/04
+1. 参数修改：`num_columns_to_net` -> `net_input_column_index`: 输入网络的columns数量改为输入网络的columns索引
+2. 参数修改：`num_columns_of_labels` -> `label_column_index`: 代表label的columns数量改为代表label的columns索引
+
 - 2023/03/23
 1. 增加dynamic loss scaler支持, 且与drop overflow update兼容。如需使用, 请在配置文件中增加`loss_scale`字段并将`type`参数设为`dynamic`，参考例子请见`configs/rec/crnn/crnn_icdar15.yaml`
 

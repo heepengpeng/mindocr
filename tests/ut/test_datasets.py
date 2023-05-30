@@ -10,12 +10,12 @@ import time
 import mindspore as ms
 import mindocr
 from mindocr.data import build_dataset
-from mindocr.utils.visualize import show_img, draw_bboxes, recover_image
+from mindocr.utils.visualize import show_img, draw_boxes, recover_image
 
 
 @pytest.mark.parametrize('task', ['det', 'rec'])
-#@pytest.mark.parametrize('phase', ['train', 'eval'])
-def test_build_dataset(task, phase='train', verbose=False, visualize=False):
+@pytest.mark.parametrize('phase', ['train', 'eval'])
+def test_build_dataset(task, phase, verbose=False, visualize=False):
     # modify ocr predefined yaml for minimum test
     if task == 'det':
         config_fp = 'configs/det/dbnet/db_r50_icdar15.yaml'
@@ -56,7 +56,7 @@ def test_build_dataset(task, phase='train', verbose=False, visualize=False):
             if task == 'det' and phase == 'eval':
                 img = batch['image'][0].asnumpy()
                 polys = batch['polys'][0].asnumpy()
-                img_polys = draw_bboxes(recover_image(img), polys)
+                img_polys = draw_boxes(recover_image(img), polys)
                 show_img(img_polys)
 
         start = time.time()
@@ -68,4 +68,5 @@ def test_build_dataset(task, phase='train', verbose=False, visualize=False):
 
 
 if __name__ == '__main__':
-    test_build_dataset(task='rec', phase='train', visualize=False)
+    #test_build_dataset(task='rec', phase='train', visualize=False)
+    test_build_dataset(task='det', phase='train', visualize=False)
