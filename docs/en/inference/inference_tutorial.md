@@ -41,13 +41,18 @@ python infer.py \
     --cls_model_name_or_config=ch_pp_mobile_cls_v2.0 \
     --rec_model_path=/path/to/mindir/crnn_resnet34.mindir \
     --rec_model_name_or_config=../../configs/rec/crnn/crnn_resnet34.yaml \
-    --res_save_dir=det_cls_rec
+    --res_save_dir=det_cls_rec \
+    --vis_pipeline_save_dir=det_cls_rec
 ```
 
-The results will be saved in det_cls_rec/pipeline_results.txt, with the following format:
+The visualization images are stored in det_cls_rec, as shown in the picture.
+
+![det_rec_res](../../cn/inference/det_rec_res.jpg)
+
+The results are saved in det_cls_rec/pipeline_results.txt in the following format:
 
 ```
-img_478.jpg	[{"transcription": "spa", "points": [[1114, 35], [1200, 0], [1234, 52], [1148, 97]]}, {...}]
+img_195.jpg	[{"transcription": "admission", "points": [[298.0, 295.0], [396.0, 309.0], [392.0, 331.0], [295.0, 317.0]]}, {"transcription": "free", "points": [[244.0, 285.0], [297.0, 295.0], [292.0, 318.0], [240.0, 309.0]]}, {"transcription": "here", "points": [[110.0, 272.0], [175.0, 276.0], [174.0, 302.0], [108.0, 298.0]]}, {"transcription": "fibre", "points": [[42.0, 270.0], [108.0, 274.0], [106.0, 300.0], [40.0, 296.0]]}, {"transcription": "public", "points": [[335.0, 270.0], [393.0, 280.0], [389.0, 303.0], [331.0, 292.0]]}, {"transcription": "to", "points": [[311.0, 271.0], [331.0, 271.0], [331.0, 290.0], [311.0, 290.0]]}, {"transcription": "open", "points": [[250.0, 256.0], [310.0, 264.0], [306.0, 289.0], [246.0, 281.0]]}, {"transcription": "experience", "points": [[43.0, 242.0], [183.0, 247.0], [182.0, 271.0], [43.0, 267.0]]}, {"transcription": "experience", "points": [[273.0, 172.0], [350.0, 199.0], [344.0, 217.0], [267.0, 190.0]]}]
 ```
 
 
@@ -63,13 +68,18 @@ python infer.py \
     --det_model_name_or_config=../../configs/det/dbnet/db_r50_icdar15.yaml \
     --rec_model_path=/path/to/mindir/crnn_resnet34.mindir \
     --rec_model_name_or_config=../../configs/rec/crnn/crnn_resnet34.yaml \
-    --res_save_dir=det_rec
+    --res_save_dir=det_rec \
+    --vis_pipeline_save_dir=det_rec
 ```
 
-The results will be saved in det_rec/pipeline_results.txt, with the following format:
+The visualization images are stored in det_rec, as shown in the picture.
+
+![det_rec_res](../../cn/inference/det_rec_res.jpg)
+
+The recognition results are saved in det_rec/pipeline_results.txt in the following format:
 
 ```
-img_478.jpg	[{"transcription": "spa", "points": [[1114, 35], [1200, 0], [1234, 52], [1148, 97]]}, {...}]
+img_195.jpg	[{"transcription": "admission", "points": [[298.0, 295.0], [396.0, 309.0], [392.0, 331.0], [295.0, 317.0]]}, {"transcription": "free", "points": [[244.0, 285.0], [297.0, 295.0], [292.0, 318.0], [240.0, 309.0]]}, {"transcription": "here", "points": [[110.0, 272.0], [175.0, 276.0], [174.0, 302.0], [108.0, 298.0]]}, {"transcription": "fibre", "points": [[42.0, 270.0], [108.0, 274.0], [106.0, 300.0], [40.0, 296.0]]}, {"transcription": "public", "points": [[335.0, 270.0], [393.0, 280.0], [389.0, 303.0], [331.0, 292.0]]}, {"transcription": "to", "points": [[311.0, 271.0], [331.0, 271.0], [331.0, 290.0], [311.0, 290.0]]}, {"transcription": "open", "points": [[250.0, 256.0], [310.0, 264.0], [306.0, 289.0], [246.0, 281.0]]}, {"transcription": "experience", "points": [[43.0, 242.0], [183.0, 247.0], [182.0, 271.0], [43.0, 267.0]]}, {"transcription": "experience", "points": [[273.0, 172.0], [350.0, 199.0], [344.0, 217.0], [267.0, 190.0]]}]
 ```
 
 - detection
@@ -82,13 +92,18 @@ python infer.py \
     --backend=lite \
     --det_model_path=/path/to/mindir/dbnet_resnet50.mindir \
     --det_model_name_or_config=../../configs/det/dbnet/db_r50_icdar15.yaml \
-    --res_save_dir=det
+    --res_save_dir=det \
+    --vis_det_save_dir=det
 ```
 
-The results will be saved in det/det_results.txt, with the following format:
+The visualization results are stored in the det folder, as shown in the picture.
+
+![det](../../cn/inference/det.png)
+
+The detection results are saved in the det/det_results.txt file in the following format:
 
 ```
-img_478.jpg    [[[1114, 35], [1200, 0], [1234, 52], [1148, 97]], [...]]]
+img_195.jpg	[[[298.0, 295.0], [396.0, 309.0], [392.0, 331.0], [295.0, 317.0]], [[244.0, 285.0], [297.0, 295.0], [292.0, 318.0], [240.0, 309.0]], [[110.0, 272.0], [175.0, 276.0], [174.0, 302.0], [108.0, 298.0]], [[42.0, 270.0], [108.0, 274.0], [106.0, 300.0], [40.0, 296.0]], [[335.0, 270.0], [393.0, 280.0], [389.0, 303.0], [331.0, 292.0]], [[311.0, 271.0], [331.0, 271.0], [331.0, 290.0], [311.0, 290.0]], [[250.0, 256.0], [310.0, 264.0], [306.0, 289.0], [246.0, 281.0]], [[43.0, 242.0], [183.0, 247.0], [182.0, 271.0], [43.0, 267.0]], [[273.0, 172.0], [350.0, 199.0], [344.0, 217.0], [267.0, 190.0]]]
 ```
 
 - classification
