@@ -67,7 +67,9 @@ python infer.py \
 
 可视化结果存放在det_rec中，如图所示：
 
-![det_rec_res](det_rec_res.jpg)
+![det_rec_res](https://github.com/heepengpeng/mindocr/assets/122354463/1e55b19a-af79-4882-a50a-3a6fc490300d)
+
+
 
 识别结果保存在det_rec/pipeline_results.txt，格式如下：
 
@@ -91,7 +93,7 @@ python infer.py \
 
 可视化结果存放在det中，如图所示：
 
-![det](det.png)
+![det](https://github.com/heepengpeng/mindocr/assets/122354463/e7e708f7-7a69-4f3f-9234-bad909052e7a)
 
 检测结果保存在det/det_results.txt，格式如下：
 
