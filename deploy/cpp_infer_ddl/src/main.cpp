@@ -257,7 +257,7 @@ Status ParseArgs(int argc, const char *argv[], CommandParser *options) {
   options->AddOption("--device_id", "0", "Device id.");
   options->AddOption("--parallel_num", "1", "Number of parallel in each stage of pipeline parallelism.");
   options->AddOption("--res_save_dir", "inference_results", "Saving dir for inference results.");
-  options->AddOption("--static_rec_model_mode", "true", "true:  static shape, false: dynamic shape");
+  options->AddOption("--static_rec_model_mode", "false", "true:  static shape, false: dynamic shape");
   options->AddOption("--rec_height", "32", "rec model required height");
   options->AddOption("--rec_min_width", "320", "rec model required min width");
   options->AddOption("--rec_max_width", "2240", "rec model required max width");
