@@ -91,12 +91,6 @@ Status HandoutNode::Process(std::shared_ptr<void> commonData) {
   while (getline(imgFile, imgPath) && !Profile::signalReceived_) {
     // LogInfo << pipelineName_ << " read file:" << imgPath;
     basename = Utils::BaseName(imgPath);
-    std::regex_match(basename.c_str(), m, reg);
-    if (m.empty()) {
-      // LogError << "Please check the image name format of " << basename <<
-               ". the image name should be xxx_xxx.xxx";
-      continue;
-    }
     imgId_++;
     std::shared_ptr<CommonData> data = std::make_shared<CommonData>();
     data->imgPath = imgPath;

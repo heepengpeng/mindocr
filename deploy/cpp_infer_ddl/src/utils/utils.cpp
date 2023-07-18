@@ -202,50 +202,50 @@ BackendType Utils::ConvertBackendTypeToEnum(const std::string &engine) {
 
 std::vector<std::vector<uint64_t>> Utils::GetGearInfo(const std::string &modelPath) {
   std::vector<std::vector<uint64_t>> gears;
-  std::ifstream infile(modelPath, std::ios::binary);
-
-  infile.seekg(0, std::ios::end);
-  size_t fileSize = infile.tellg();
-  infile.seekg(0, std::ios::beg);
-
-  char *buffer = new char[fileSize];
-
-  infile.read(buffer, fileSize);
-
-  infile.close();
-
-  std::string content;
-  for (size_t i = 0; i < fileSize; i++) {
-    if (buffer[i] >= ASCII_START && buffer[i] <= ASCII_END) {
-      content += buffer[i];
-    }
-  }
-
-  delete[] buffer;
-
-  std::regex pattern("_all_origin_gears_inputs.*?R9_ge_attr");
-  std::smatch match;
-
-  if (std::regex_search(content, match, pattern)) {
-    std::string matchText = match[0].str();
-
-    std::smatch results;
-    std::string temp;
-    std::regex shapePattern(":4:(\\d+),(\\d+),(\\d+),(\\d+)");
-    std::sregex_iterator it(matchText.begin(), matchText.end(), shapePattern);
-    std::sregex_iterator end;
-
-    while (it != end) {
-      temp = it->str().substr(SHAPE_POSITION_BIAS);
-      std::vector<std::string> shapeVec = Utils::SplitString(temp, ',');
-      std::vector<uint64_t> gear;
-      for (const auto &s : shapeVec) {
-        gear.push_back(std::stoi(s));
-      }
-      gears.push_back(gear);
-      ++it;
-    }
-  }
+//  std::ifstream infile(modelPath, std::ios::binary);
+//
+//  infile.seekg(0, std::ios::end);
+//  size_t fileSize = infile.tellg();
+//  infile.seekg(0, std::ios::beg);
+//
+//  char *buffer = new char[fileSize];
+//
+//  infile.read(buffer, fileSize);
+//
+//  infile.close();
+//
+//  std::string content;
+//  for (size_t i = 0; i < fileSize; i++) {
+//    if (buffer[i] >= ASCII_START && buffer[i] <= ASCII_END) {
+//      content += buffer[i];
+//    }
+//  }
+//
+//  delete[] buffer;
+//
+//  std::regex pattern("_all_origin_gears_inputs.*?R9_ge_attr");
+//  std::smatch match;
+//
+//  if (std::regex_search(content, match, pattern)) {
+//    std::string matchText = match[0].str();
+//
+//    std::smatch results;
+//    std::string temp;
+//    std::regex shapePattern(":4:(\\d+),(\\d+),(\\d+),(\\d+)");
+//    std::sregex_iterator it(matchText.begin(), matchText.end(), shapePattern);
+//    std::sregex_iterator end;
+//
+//    while (it != end) {
+//      temp = it->str().substr(SHAPE_POSITION_BIAS);
+//      std::vector<std::string> shapeVec = Utils::SplitString(temp, ',');
+//      std::vector<uint64_t> gear;
+//      for (const auto &s : shapeVec) {
+//        gear.push_back(std::stoi(s));
+//      }
+//      gears.push_back(gear);
+//      ++it;
+//    }
+//  }
   return gears;
 }
 

@@ -39,7 +39,7 @@ Status ModuleManager::InitModuleInstance(const std::shared_ptr<ModuleBase> &modu
       return Status::FAILURE;
     }
     auto &deviceList = context->MutableDeviceInfo();
-    auto ascendDeviceInfo = std::make_shared<mindspore::AscendDeviceInfo>();
+    auto ascendDeviceInfo = std::make_shared<mindspore::CPUDeviceInfo>();
     if (ascendDeviceInfo == nullptr) {
       // LogError << "New AscendDeviceInfo failed";
       return Status::FAILURE;
@@ -47,7 +47,6 @@ Status ModuleManager::InitModuleInstance(const std::shared_ptr<ModuleBase> &modu
 
     std::vector<uint32_t> deviceIdVec;
     options_->GetVectorUint32Value("--device_id", &deviceIdVec);
-    ascendDeviceInfo->SetDeviceID(deviceIdVec[0]);
     deviceList.push_back(ascendDeviceInfo);
     initArgs.context = context;
   }

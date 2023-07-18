@@ -436,10 +436,10 @@ Status args_check(CommandParser *options, bool useCls) {
     if (backend == BackendType::LITE) {
       dynamicGearInfo = Utils::GetGearInfo(detModelPath);
     }
-    if (dynamicGearInfo.empty()) {
-      // LogError << "please check the value of detModelPath";
-      return Status::COMM_INVALID_PARAM;
-    }
+//    if (dynamicGearInfo.empty()) {
+//      // LogError << "please check the value of detModelPath";
+//      return Status::COMM_INVALID_PARAM;
+//    }
   }
 
   if (useCls) {

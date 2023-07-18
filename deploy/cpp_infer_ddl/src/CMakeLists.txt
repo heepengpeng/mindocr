@@ -42,17 +42,17 @@ set(SOURCE_FILE
 		${SRC_FILE})
 
 set(LITE_HOME $ENV{LITE_HOME})
-set(MX_SDK_HOME $ENV{MX_SDK_HOME})
+set(OPENCV_HOME $ENV{OPENCV_HOME})
 include_directories(
 		${LITE_HOME}/runtime/
-		${MX_SDK_HOME}/opensource/include/opencv4
+		${OPENCV_HOME}/include/opencv4
 )
 
 link_directories(
 		${LITE_HOME}/runtime/lib
 		${LITE_HOME}/tools/converter/lib
-		${MX_SDK_HOME}/opensource/lib
 )
 # Set the target executable file
+
 add_executable(infer ${SOURCE_FILE})
-target_link_libraries(infer mindspore-lite dl opencv_world pthread -Wl,-z,relro,-z,now,-z,noexecstack -pie -s)
+target_link_libraries(infer mindspore-lite dl opencv_core opencv_imgcodecs opencv_imgproc pthread -Wl,-z,relro,-z,now,-z,noexecstack -pie -s)
