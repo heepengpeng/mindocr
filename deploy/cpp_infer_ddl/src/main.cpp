@@ -447,10 +447,10 @@ Status args_check(CommandParser *options, bool useCls) {
     if (backend == BackendType::LITE) {
       dynamicGearInfo = Utils::GetGearInfo(clsModelPath);
     }
-    if (dynamicGearInfo.empty()) {
-      // LogError << "Please check the value of clsModelPath";
-      return Status::COMM_INVALID_PARAM;
-    }
+//    if (dynamicGearInfo.empty()) {
+//      // LogError << "Please check the value of clsModelPath";
+//      return Status::COMM_INVALID_PARAM;
+//    }
   }
 
   auto staticRecModelMode = options->GetBoolOption("--static_rec_model_mode");
@@ -468,10 +468,10 @@ Status args_check(CommandParser *options, bool useCls) {
         if (backend == BackendType::LITE) {
           if (staticRecModelMode) {
             dynamicGearInfo = Utils::GetGearInfo(file);
-            if (dynamicGearInfo.empty()) {
-              // LogError << "please check the value of recModelPath";
-              return Status::COMM_INVALID_PARAM;
-            }
+//            if (dynamicGearInfo.empty()) {
+//              // LogError << "please check the value of recModelPath";
+//              return Status::COMM_INVALID_PARAM;
+//            }
           }
         }
       } catch (...) {
