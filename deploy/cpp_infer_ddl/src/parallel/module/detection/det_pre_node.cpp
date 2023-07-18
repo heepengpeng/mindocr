@@ -55,23 +55,23 @@ Status DetPreNode::ParseConfig(CommandParser *options) {
     return Status::COMM_INVALID_PARAM;
   }
 
-  std::string detModelPath = options->GetStringOption("--det_model_path");
-  std::string baseName = Utils::BaseName(detModelPath) + ".1.bin";
-  std::string modelConfigPath("./temp/dbnet/");
-  Utils::LoadFromFilePair(modelConfigPath + baseName, &gearInfo_);
-  std::sort(gearInfo_.begin(), gearInfo_.end(), Utils::PairCompare);
-  uint64_t hwSum = 0;
-  for (auto &pair : gearInfo_) {
-    uint64_t h = pair.first;
-    uint64_t w = pair.second;
-    maxH_ = maxH_ > h ? maxH_ : h;
-    maxW_ = maxW_ > w ? maxW_ : w;
-    if (h * w > hwSum) {
-      hwSum = h * w;
-      maxDotGear_.first = h;
-      maxDotGear_.second = w;
-    }
-  }
+//  std::string detModelPath = options->GetStringOption("--det_model_path");
+//  std::string baseName = Utils::BaseName(detModelPath) + ".1.bin";
+//  std::string modelConfigPath("./temp/dbnet/");
+//  Utils::LoadFromFilePair(modelConfigPath + baseName, &gearInfo_);
+//  std::sort(gearInfo_.begin(), gearInfo_.end(), Utils::PairCompare);
+//  uint64_t hwSum = 0;
+//  for (auto &pair : gearInfo_) {
+//    uint64_t h = pair.first;
+//    uint64_t w = pair.second;
+//    maxH_ = maxH_ > h ? maxH_ : h;
+//    maxW_ = maxW_ > w ? maxW_ : w;
+//    if (h * w > hwSum) {
+//      hwSum = h * w;
+//      maxDotGear_.first = h;
+//      maxDotGear_.second = w;
+//    }
+//  }
 
   return Status::OK;
 }
@@ -92,24 +92,24 @@ void DetPreNode::Resize(const cv::Mat &inImg, cv::Mat *outImg, const std::pair<u
                         float *inputRatio) {
   int imgH = inImg.rows;
   int imgW = inImg.cols;
-  int gearH = gear.first;
-  int gearW = gear.second;
+//  int gearH = gear.first;
+//  int gearW = gear.second;
   float ratio = 1.f;
-  if (imgH > gearH || imgW > gearW) {
-    if (imgH > imgW) {
-      ratio = static_cast<float>(gearH) / static_cast<float>(imgH);
-      int resizeByH = static_cast<int>(ratio * static_cast<float>(imgW));
-      if (resizeByH > gearW) {
-        ratio = static_cast<float>(gearW) / static_cast<float>(imgW);
-      }
-    } else {
-      ratio = static_cast<float>(gearW) / static_cast<float>(imgW);
-      int resizeByW = static_cast<int>(ratio * static_cast<float>(imgH));
-      if (resizeByW > gearH) {
-        ratio = static_cast<float>(gearH) / static_cast<float>(imgH);
-      }
-    }
-  }
+//  if (imgH > gearH || imgW > gearW) {
+//    if (imgH > imgW) {
+//      ratio = static_cast<float>(gearH) / static_cast<float>(imgH);
+//      int resizeByH = static_cast<int>(ratio * static_cast<float>(imgW));
+//      if (resizeByH > gearW) {
+//        ratio = static_cast<float>(gearW) / static_cast<float>(imgW);
+//      }
+//    } else {
+//      ratio = static_cast<float>(gearW) / static_cast<float>(imgW);
+//      int resizeByW = static_cast<int>(ratio * static_cast<float>(imgH));
+//      if (resizeByW > gearH) {
+//        ratio = static_cast<float>(gearH) / static_cast<float>(imgH);
+//      }
+//    }
+//  }
   int resizeH = static_cast<int>(static_cast<float>(imgH) * ratio);
   int resizeW = static_cast<int>(static_cast<float>(imgW) * ratio);
   cv::resize(inImg, *outImg, cv::Size(resizeW, resizeH));
@@ -151,7 +151,7 @@ Status DetPreNode::Process(std::shared_ptr<void> commonData) {
   float ratio = 0;
   Resize(inImg, &resizedImg, gear, &ratio);
 
-  Padding(&resizedImg, gear);
+//  Padding(&resizedImg, gear);
 
   // Normalize: y = (x - mean) / std
   std::vector<cv::Mat> bgrChannels(CHANNEL_SIZE);
