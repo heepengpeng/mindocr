@@ -110,8 +110,8 @@ void DetPreNode::Resize(const cv::Mat &inImg, cv::Mat *outImg, const std::pair<u
 //      }
 //    }
 //  }
-  int resizeH = static_cast<int>(static_cast<float>(imgH) * ratio);
-  int resizeW = static_cast<int>(static_cast<float>(imgW) * ratio);
+  int resizeH = 736;
+  int resizeW = 1280;
   cv::resize(inImg, *outImg, cv::Size(resizeW, resizeH));
   *inputRatio = static_cast<float>(resizeH) / static_cast<float>(imgH);
 }
