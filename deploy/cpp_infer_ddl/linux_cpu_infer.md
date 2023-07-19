@@ -1,4 +1,4 @@
-# Linux C++ 推理
+# Linux环境下MindOCR C++ 推理推理教程（使用CPU）
 
 ## 1. 依赖安装
 
