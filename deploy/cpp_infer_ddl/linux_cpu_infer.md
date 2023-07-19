@@ -3,8 +3,8 @@
 ## 1. 依赖安装
 
 ### 1.1 mindspore-lite安装
-打开 [MindSpore Lite 官方页面] (https://www.mindspore.cn/lite/docs/zh-CN/r2.0/use/downloads.html), 请用户根据使用的操作系统下载对应包，这里以Linux-x86-64为例，
-下载 [MindSpore Lite 安装包] (https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.0.0/MindSpore/lite/release/linux/x86_64/cloud_fusion/python37/mindspore-lite-2.0.0-linux-x64.tar.gz)。下载完成后放到用户自定义目录。
+打开 [MindSpore Lite 官方页面](https://www.mindspore.cn/lite/docs/zh-CN/r2.0/use/downloads.html), 请用户根据使用的操作系统下载对应包，这里以Linux-x86-64为例，
+下载 [MindSpore Lite 安装包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.0.0/MindSpore/lite/release/linux/x86_64/cloud_fusion/python37/mindspore-lite-2.0.0-linux-x64.tar.gz)。下载完成后放到用户自定义目录。
 然后执行下面的命令进行解压。
 
 ```shell
