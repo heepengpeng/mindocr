@@ -137,3 +137,4 @@ dmypy.json
 
 # mindspore compile related
 rank_*/
+/deploy/cpp_infer_dll/.idea/
